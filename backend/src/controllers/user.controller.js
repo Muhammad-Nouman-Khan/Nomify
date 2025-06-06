@@ -36,6 +36,7 @@ export async function getMyFriends(req, res) {
 export async function sendFriendRequest(req, res) {
   try {
     const myId = req.user.id;
+    //recipient is the one who is receiving the friend request
     const { id: recipientId } = req.params;
 
     //prevent sending friend request to yourself
@@ -76,6 +77,46 @@ export async function sendFriendRequest(req, res) {
     res.status(201).json(friendRequest);
   } catch (error) {
     console.error("Error in sendFriendRequest", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+export async function acceptFriendRequest(req, res) {
+  try {
+    // requestId is the id of the friend request that is being accepted
+    // who will send that id in params ? : the recipient of the friend request
+
+    const { id: requestId } = req.params;
+    const friendRequest = await FriendRequest.findById(requestId);
+
+    if (!friendRequest) {
+      return res.status(404).json({ message: "Friend request not found" });
+    }
+
+    // verify the current user is the recipient of the friend request
+    //why toString() ? : because the friendRequest.recipient is an object and we want to compare it with the req.user.id which is a string
+    if (friendRequest.recipient.toString() !== req.user.id) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to accept this request" });
+    }
+
+    friendRequest.status = "accepted";
+
+    await friendRequest.save();
+
+    // add each user to the other's friends array
+    await User.findByIdAndUpdate(friendRequest.sender, {
+      $addToSet: { friends: friendRequest.recipient }, // $addToSet is used to add a value to an array only if it is not already present
+    });
+
+    await User.findByIdAndUpdate(friendRequest.recipient, {
+      $addToSet: { friends: friendRequest.sender },
+    });
+
+    res.status(200).json({ message: "Friend request accepted" });
+  } catch (error) {
+    console.error("Error in acceptFriendRequest", error.message);
     res.status(500).json({ message: "Internal server error" });
   }
 }
