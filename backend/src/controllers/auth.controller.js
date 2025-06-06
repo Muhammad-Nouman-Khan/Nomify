@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
+import upsertStreamUser from "../utils/stream.js";
 export const signup = async (req, res) => {
   const { email, password, fullName } = req.body;
 
@@ -31,6 +32,17 @@ export const signup = async (req, res) => {
       password,
       profilePic: randomAvatar,
     });
+    try {
+      await upsertStreamUser({
+        id: newUser._id,
+        name: newUser.fullName,
+        image: newUser.profilePic || "",
+      });
+      console.log(`Stream user created successfully ${newUser._id}`);
+    } catch (error) {
+      console.log("Error Creating Stream User", error);
+    }
+
     //jwt.sign have 3 parts : payload,secretkey,options
     //payload : data that we want to store in the token
     //secretkey : secret key that we use to sign the token
@@ -62,9 +74,44 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  res.send("Login Route");
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user)
+      return res.status(401).json({ message: "Invalid email or password" });
+
+    const isPasswordCorrect = await user.comparePassword(password);
+
+    if (!isPasswordCorrect)
+      return res.status(401).json({ message: "Invalid email or password" });
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: "7d",
+    });
+
+    res.cookie("jwt", token, {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      user,
+    });
+  } catch (error) {
+    console.log("Error in login controller", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 export const logout = (req, res) => {
-  res.send("Logout Route");
+  res.clearCookie("jwt");
+  res.status(200).json({ success: true, message: "Logout Successful" });
 };
