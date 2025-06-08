@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router";
 import { Code2Icon, GraduationCapIcon } from "lucide-react";
 
