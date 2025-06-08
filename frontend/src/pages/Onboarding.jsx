@@ -133,10 +133,7 @@ const Onboarding = () => {
                 >
                   <option value="">Select your current skill</option>
                   {SKILL_AREAS.map((skill) => (
-                    <option
-                      key={`current-${skill}`}
-                      value={skill.toLowerCase()}
-                    >
+                    <option key={`current-${skill}`} value={skill}>
                       {skill}
                     </option>
                   ))}
@@ -160,10 +157,7 @@ const Onboarding = () => {
                 >
                   <option value="">Select the skill you want to learn</option>
                   {SKILL_AREAS.map((skill) => (
-                    <option
-                      key={`learning-${skill}`}
-                      value={skill.toLowerCase()}
-                    >
+                    <option key={`learning-${skill}`} value={skill}>
                       {skill}
                     </option>
                   ))}
