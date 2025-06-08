@@ -16,37 +16,48 @@ const App = () => {
   // useAuthUser is a custom hook that fetches the auth user from the server
   const { isLoading, authUser } = useAuthUser();
 
+  const isAuthenticated = Boolean(authUser);
+  const isOnboarded = authUser?.isOnboarded;
+
   if (isLoading) return <PageLoader />;
   return (
     <div className=" h-screen" data-theme="night">
       <Routes>
         <Route
           path="/"
-          element={authUser ? <Home /> : <Navigate to="/login" />}
+          element={
+            isAuthenticated && isOnboarded ? (
+              <Home />
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )
+          }
         />
         <Route
           path="signup"
-          element={!authUser ? <SignUp /> : <Navigate to="/" />}
+          element={!isAuthenticated ? <SignUp /> : <Navigate to="/" />}
         />
         <Route
           path="/login"
-          element={!authUser ? <Login /> : <Navigate to="/" />}
+          element={!isAuthenticated ? <Login /> : <Navigate to="/" />}
         />
         <Route
           path="/onboarding"
-          element={authUser ? <Onboarding /> : <Navigate to="/login" />}
+          element={isAuthenticated ? <Onboarding /> : <Navigate to="/login" />}
         />
         <Route
           path="/notifications"
-          element={authUser ? <Notifications /> : <Navigate to="/login" />}
+          element={
+            isAuthenticated ? <Notifications /> : <Navigate to="/login" />
+          }
         />
         <Route
           path="/call"
-          element={authUser ? <Call /> : <Navigate to="/login" />}
+          element={isAuthenticated ? <Call /> : <Navigate to="/login" />}
         />
         <Route
           path="/chat"
-          element={authUser ? <Chat /> : <Navigate to="/login" />}
+          element={isAuthenticated ? <Chat /> : <Navigate to="/login" />}
         />
       </Routes>
       <Toaster />
