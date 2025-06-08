@@ -8,21 +8,13 @@ import Notifications from "./pages/Notifications";
 import Call from "./pages/Call";
 import Chat from "./pages/Chat";
 import { Toaster } from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "./lib/axios";
 import PageLoader from "./components/PageLoader";
+import useAuthUser from "./hooks/useAuthUser";
 const App = () => {
   //tanstack query : used to fetch data from the server
   // mutation : used to create, update, delete data from the server
-  const { data: authData, isLoading } = useQuery({
-    queryKey: ["authUser"],
-    queryFn: async () => {
-      const res = await axiosInstance.get("/auth/me");
-      return res.data;
-    },
-    retry: false, // auth check
-  });
-  const authUser = authData?.user; //here its user because we are returning user from this endpoint
+  // useAuthUser is a custom hook that fetches the auth user from the server
+  const { isLoading, authUser } = useAuthUser();
 
   if (isLoading) return <PageLoader />;
   return (
