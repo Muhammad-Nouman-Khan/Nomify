@@ -10,14 +10,11 @@ import Chat from "./pages/Chat";
 import { Toaster } from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "./lib/axios";
+import PageLoader from "./components/PageLoader";
 const App = () => {
   //tanstack query : used to fetch data from the server
   // mutation : used to create, update, delete data from the server
-  const {
-    data: authData,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: authData, isLoading } = useQuery({
     queryKey: ["authUser"],
     queryFn: async () => {
       const res = await axiosInstance.get("/auth/me");
@@ -26,6 +23,8 @@ const App = () => {
     retry: false, // auth check
   });
   const authUser = authData?.user; //here its user because we are returning user from this endpoint
+
+  if (isLoading) return <PageLoader />;
   return (
     <div className=" h-screen" data-theme="night">
       <Routes>
