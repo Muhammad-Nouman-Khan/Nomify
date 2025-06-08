@@ -10,6 +10,7 @@ import Chat from "./pages/Chat";
 import { Toaster } from "react-hot-toast";
 import PageLoader from "./components/PageLoader";
 import useAuthUser from "./hooks/useAuthUser";
+import Layout from "./components/Layout";
 const App = () => {
   //tanstack query : used to fetch data from the server
   // mutation : used to create, update, delete data from the server
@@ -27,7 +28,9 @@ const App = () => {
           path="/"
           element={
             isAuthenticated && isOnboarded ? (
-              <Home />
+              <Layout showSidebar={true}>
+                <Home />
+              </Layout>
             ) : (
               <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
             )
