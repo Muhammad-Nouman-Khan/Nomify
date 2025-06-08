@@ -11,18 +11,19 @@ import { Toaster } from "react-hot-toast";
 import PageLoader from "./components/PageLoader";
 import useAuthUser from "./hooks/useAuthUser";
 import Layout from "./components/Layout";
+import { useThemeStore } from "./store/useThemeStore";
 const App = () => {
   //tanstack query : used to fetch data from the server
   // mutation : used to create, update, delete data from the server
   // useAuthUser is a custom hook that fetches the auth user from the server
   const { isLoading, authUser } = useAuthUser();
-
+  const { theme } = useThemeStore();
   const isAuthenticated = Boolean(authUser);
   const isOnboarded = authUser?.isOnboarded;
 
   if (isLoading) return <PageLoader />;
   return (
-    <div className=" h-screen" data-theme="night">
+    <div className=" h-screen" data-theme={theme}>
       <Routes>
         <Route
           path="/"
