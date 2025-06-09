@@ -53,7 +53,7 @@ const Home = () => {
   }, [outgoingFriendReqs]);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
+    <div className="p-4 sm:p-6 lg:p-8 min-h-screen">
       <div className="container mx-auto space-y-10">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
@@ -131,15 +131,19 @@ const Home = () => {
                         </div>
                       </div>
                       {/* Skills*/}
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className="badge badge-secondary">
+                      <div className="flex flex-col gap-2">
+                        <div className="badge badge-secondary w-fit text-xs">
                           <Code2Icon className="size-3 mr-1 text-primary-content" />
-                          Skilled In: {user.currentField}
-                        </span>
-                        <span className="badge badge-outline">
+                          <span className="truncate max-w-[200px]">
+                            Skilled In: {user.currentField}
+                          </span>
+                        </div>
+                        <div className="badge badge-outline w-fit text-xs">
                           <GraduationCapIcon className="size-3 mr-1 text-secondary" />
-                          Learning: {user.learningField}
-                        </span>
+                          <span className="truncate max-w-[200px]">
+                            Learning: {user.learningField}
+                          </span>
+                        </div>
                       </div>
                       {user.bio && (
                         <p className="text-sm opacity-70">{user.bio}</p>

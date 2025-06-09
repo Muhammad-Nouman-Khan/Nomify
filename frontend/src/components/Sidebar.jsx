@@ -7,18 +7,27 @@ const Sidebar = () => {
   const { authUser } = useAuthUser();
   const location = useLocation();
   const currentPath = location.pathname;
+
   return (
-    <aside className="w-64 bg-base-200 border-r border-base-300 hidden lg:flex flex-col h-screen sticky top-0">
-      <div className="p-5 border-b border-base-300">
+    <aside className="bg-base-200 border-r border-base-300 flex flex-col h-screen sticky top-0 ">
+      {/* Logo - Hidden on mobile */}
+      <div className="p-5 border-b border-base-300 hidden lg:block">
         <Link to="/" className="flex items-center gap-2.5">
           <LoaderPinwheel className="size-9 text-primary" />
-          <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary  tracking-wider">
+          <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
             Nomify
           </span>
         </Link>
       </div>
 
-      <nav className="flex-1 p-4 space-y-1 ">
+      {/* Mobile Logo - Only visible on mobile */}
+      <div className="p-4 border-b border-base-300 lg:hidden">
+        <Link to="/" className="flex items-center justify-center">
+          <LoaderPinwheel className="size-8 text-primary" />
+        </Link>
+      </div>
+
+      <nav className="flex-1 p-4 space-y-1 w-20 lg:w-full">
         <Link
           to="/"
           className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${
@@ -26,7 +35,7 @@ const Sidebar = () => {
           }`}
         >
           <HomeIcon className="size-5 text-base-content opacity-70" />
-          <span>Home</span>
+          <span className="hidden lg:inline">Home</span>
         </Link>
 
         <Link
@@ -36,7 +45,7 @@ const Sidebar = () => {
           }`}
         >
           <UsersIcon className="size-5 text-base-content opacity-70" />
-          <span>Friends</span>
+          <span className="hidden lg:inline">Friends</span>
         </Link>
 
         <Link
@@ -46,11 +55,12 @@ const Sidebar = () => {
           }`}
         >
           <BellIcon className="size-5 text-base-content opacity-70" />
-          <span>Notifications</span>
+          <span className="hidden lg:inline">Notifications</span>
         </Link>
       </nav>
 
-      <div className="p-4 border-t border-base-300 mt-auto">
+      {/* User Profile - Hidden on mobile */}
+      <div className="p-4 border-t border-base-300 mt-auto hidden lg:block">
         <div className="flex items-center gap-3">
           <div className="avatar">
             <div className="w-10 rounded-full">
@@ -63,6 +73,17 @@ const Sidebar = () => {
               <span className="size-2 rounded-full bg-success inline-block" />
               Online
             </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile User Profile - Only visible on mobile */}
+      <div className="p-4 border-t border-base-300 mt-auto lg:hidden">
+        <div className="flex items-center justify-center">
+          <div className="avatar">
+            <div className="w-8 rounded-full">
+              <img src={authUser?.profilePic} alt="User Avatar" />
+            </div>
           </div>
         </div>
       </div>

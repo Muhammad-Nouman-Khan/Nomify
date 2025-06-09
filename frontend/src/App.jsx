@@ -7,11 +7,13 @@ import Onboarding from "./pages/Onboarding";
 import Notifications from "./pages/Notifications";
 import Call from "./pages/Call";
 import Chat from "./pages/Chat";
+import Friends from "./pages/Friends";
 import { Toaster } from "react-hot-toast";
 import PageLoader from "./components/PageLoader";
 import useAuthUser from "./hooks/useAuthUser";
 import Layout from "./components/Layout";
 import { useThemeStore } from "./store/useThemeStore";
+
 const App = () => {
   //tanstack query : used to fetch data from the server
   // mutation : used to create, update, delete data from the server
@@ -23,7 +25,7 @@ const App = () => {
 
   if (isLoading) return <PageLoader />;
   return (
-    <div className=" h-screen" data-theme={theme}>
+    <div className=" min-h-screen" data-theme={theme}>
       <Routes>
         <Route
           path="/"
@@ -77,6 +79,18 @@ const App = () => {
             isAuthenticated && isOnboarded ? (
               <Layout showSidebar={true}>
                 <Notifications />
+              </Layout>
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )
+          }
+        />
+        <Route
+          path="/friends"
+          element={
+            isAuthenticated && isOnboarded ? (
+              <Layout showSidebar={true}>
+                <Friends />
               </Layout>
             ) : (
               <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
